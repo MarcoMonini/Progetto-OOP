@@ -2,7 +2,7 @@ package com.esameOOP.Progetto.Modello;
 
 public class CasiLegali {
     public String leg_case, leg_stat, unit, geo;
-    public int[] time;
+    public float[] time;
     public static final int differenza_anni =  9;
     /**
      * Costruttore della classe Oggetto
@@ -12,7 +12,7 @@ public class CasiLegali {
      * @param geo
      * @array time
      */
-    public CasiLegali(String leg_case, String leg_stat, String unit, String geo, int[] time){
+    public CasiLegali(String leg_case, String leg_stat, String unit, String geo, float[] time){
         this.leg_case = leg_case;
         this.leg_stat = leg_stat;
         this.unit = unit;

@@ -137,14 +137,14 @@ public class Download {
                 String unit = lineaSplittata[1].trim();
                 String nace_r2 = lineaSplittata[2].trim();
                 String geo = lineaSplittata[3].trim();
-                double[] valori = new double[CasiLegali.differenza_anni];
+                float[] time = new float[CasiLegali.differenza_anni];
                 for(int i = 0; i < CasiLegali.differenza_anni; i++) {
                     if (4 + i < lineaSplittata.length)                               //Gestione errore java.lang.ArrayIndexOutOfBoundsException
-                        valori[i] = Double.parseDouble(lineaSplittata[4 + i].trim());       //Inserisce i valori della tabella dentro il vettore
+                        time[i] = Float.parseFloat(lineaSplittata[4 + i].trim());       //Inserisce i time della tabella dentro il vettore
                     else
-                        valori[i] = 0;                                                      //Per i valori che non ci sono dopo lineaSplittata aggiunge "0"
+                        time[i] = 0;                                                      //Per i time che non ci sono dopo lineaSplittata aggiunge "0"
                 }
-                CasiLegali oggettoParsato = new CasiLegali(c_resid, unit, nace_r2, geo, valori);
+                CasiLegali oggettoParsato = new CasiLegali(c_resid, unit, nace_r2, geo, time);
                 record.add(oggettoParsato);         //Aggiungo oggettoParsato alla lista
             }
         } catch (IOException e){
