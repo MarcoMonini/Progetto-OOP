@@ -1,6 +1,11 @@
 package com.esameOOP.Progetto.Modello;
 
-public class CasiLegali {
+import java.io.Serializable;
+
+/*Classe modellante dataset
+*/
+
+public class CasiLegali implements Serializable {       //Serializable permette di salvare gli oggetti della classe su file
     public String leg_case, leg_stat, unit, geo;
     public float[] time;
     public static final int differenza_anni =  9;
@@ -21,19 +26,43 @@ public class CasiLegali {
     }
 
     /**
-     * Metodi get
+     * Metodo get per leg_case
+     * @return
      */
     public String getLeg_case() {
         return leg_case;
     }
+
+    /**
+     * Metodo get per leg_stat
+     * @return
+     */
     public String getLeg_stat() {
         return leg_stat;
     }
+
+    /**
+     * Metodo get per getUnit
+     * @return
+     */
     public String getUnit() {
         return unit;
     }
+
+    /**
+     * Metodo get per geo
+     * @return
+     */
     public String getGeo() {
         return geo;
+    }
+
+    /**
+     * Metodo get per valori
+     * @return
+     */
+    public float[] getTime() {
+        return time;
     }
 
     /**

@@ -2,9 +2,11 @@ package com.esameOOP.Progetto.Controller;
 
 import com.esameOOP.Progetto.Modello.CasiLegali;
 import com.esameOOP.Progetto.service.Download;
+import com.esameOOP.Progetto.service.Statistiche;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -70,11 +72,16 @@ public class Controller {
      * @param nameField
      * @return
      */
-    /*@GetMapping("/getStatistiche")
+
+    @GetMapping("/getStatistiche")
     public List getStatistiche(@RequestParam(value = "Field", required = false, defaultValue = "") String nameField) {
-        if (!nameField.equals("")) {
-            List<Map> lista = new ArrayList<>();
-            lista.add()
+        if (nameField.equals(""))
+            return service.getAllFieldStatistics();
+        else {
+            List list = null;
+            list.add(Statistiche.getAllStatistics(nameField, service.getField(nameField)));
+            return list;
         }
-    }*/
+
+    }
 }

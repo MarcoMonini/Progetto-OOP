@@ -10,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -29,7 +31,8 @@ import java.util.Map;
 public class Download {
     private static List<CasiLegali> record = new ArrayList<>();        //Lista di oggetti NottiNazione
     private final static String TAB_DELIMITER = "\t";
-    private static List<Map> Lista = new ArrayList();                    //Lista per i Metadata
+    private static List<Map> Lista = new ArrayList();//Lista per i Metadata
+    static List<String> time = new ArrayList<>();
 
     /**
      * Costruttore della classe Download
@@ -38,6 +41,8 @@ public class Download {
      */
     public Download() throws IOException {
         String fileTSV = "dataset.tsv";
+        for(int i = 0; i < CasiLegali.differenza_anni; i++)
+            time.add(Integer.toString((2007+i)));
         if (Files.exists(Paths.get(fileTSV)))
             System.out.println("Dataset ricaricato da locale");
         else {
@@ -110,8 +115,8 @@ public class Download {
             }
             Files.copy(in, Paths.get(fileName));
             System.out.println("File size " + Files.size(Paths.get(fileName)));
-        } finally {
-            in.close();
+            } finally {
+                in.close();
         }
     }
 
@@ -192,10 +197,7 @@ public class Download {
      * @return anni
      */
     public List getAnni(){
-        List<String> anni = new ArrayList<>();
-        for(int i = 0; i < CasiLegali.differenza_anni; i++)
-            anni.add(Integer.toString(2007+i));
-        return anni;
+        return time;
     }
 
     /**
@@ -204,6 +206,7 @@ public class Download {
      * @return Lista
      */
     public List<Map> getMetadata(){
+
         return Lista;
     }
 
@@ -218,17 +221,56 @@ public class Download {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Oggetto di indice " + i + " non esiste!");
     }
 
-    /*public List<Map> getStatistics(){
-        Field[] fields = NottiNazione.class.getDeclaredFields();
-        List<Map> listStats = new ArrayList<>();
-        for(Field f : fields){
-            String fieldName = f.getName();
-            if(fieldName.equals("valori"))
-                for(int i = 0; i < NottiNazione.differenza_anni; i++)
-                    listStats.add(getStatistics(Integer.toString(2007+i)));
-                else
-                    listStats.add(getStatistics(fieldName));
+
+    public List getField(String nomeCampo) {
+        List<Object> listField = new ArrayList<>(); //inizializzo lista che conterrà i valori del campo
+        try {
+            /*
+            Gestisco il caso in cui il nome del campo sia un anno:
+            In questo caso verifico se sia uno degli anni all'interno del vettore time
+            Se questo è vero allora inserisco dentro dentro "ob" i valori relativi al nome del campo inserito
+             */
+            if(time.contains(nomeCampo)){
+                for(CasiLegali notti : record){
+                    Object ob= notti.getTime()[Integer.parseInt(nomeCampo)-2000]; //considero solo l'elemento che mi interessa del metodo get
+                    listField.add(ob);
+                }
+            }
+            /*
+            Nel caso in cui il nome del campo non sia un anno:
+            Scorro tutti gli oggetti all'interno della classe record e vado ad estrarre
+            i valori del campo relativo al nome del campo inserito dall'utente.
+            All'interno del ciclo viene caricato l'oggetto relativo al campo da
+             */
+            else {
+                //serve per scorrere tutti gli oggetti ed estrarre i valori del campo nomeCampo
+                for (CasiLegali casiLegali : record) {
+                    Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1)); //costruisco il metodo get del modello di riferimento
+                    Object value = getter.invoke(record); //invoco il metodo get sull'oggetto della classe modellante
+                    listField.add(value); //aggiungo il valore alla lista
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, nomeCampo + " non esiste.");
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
-    return listStats;
-    }*/
-}
+        return listField; //ritorno la lista
+    }
+
+    public List<Map> getAllFieldStatistics() {
+        Field[] fields = CasiLegali.class.getDeclaredFields();
+        List<Map> list = new ArrayList<>();
+        for(Field campo : fields){
+            String fieldName = campo.getName();
+            if(fieldName.equals("record"))
+                for(int i = 0; i < CasiLegali.differenza_anni; i++)
+                    list.add(Statistiche.getAllStatistics(fieldName, getField(fieldName)));
+            else
+                list.add(Statistiche.getAllStatistics(fieldName, getField(fieldName)));
+        }
+        return list;
+    }
+    }
+
