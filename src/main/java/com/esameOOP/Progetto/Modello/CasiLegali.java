@@ -6,6 +6,7 @@ import java.io.Serializable;
 */
 
 public class CasiLegali implements Serializable {       //Serializable permette di salvare gli oggetti della classe su file
+
     public String leg_case, leg_stat, unit, geo;
     public float[] time;
     public static final int differenza_anni =  9;
@@ -58,7 +59,7 @@ public class CasiLegali implements Serializable {       //Serializable permette 
     }
 
     /**
-     * Metodo get per valori
+     * Metodo get per time
      * @return
      */
     public float[] getTime() {
@@ -73,10 +74,9 @@ public class CasiLegali implements Serializable {       //Serializable permette 
     @Override
     public String toString() {
         StringBuilder record; //oggetto di tipo StringBuilder
-        record = new StringBuilder("Oggetto: " + "Leg_case=" + leg_case + ", Leg_stat=" + leg_stat + ", geo= " + geo + ", unit=" + unit + ";");
+        record = new StringBuilder("CasiLegali: " + "Leg_case=" + leg_case + ", Leg_stat=" + leg_stat + ", geo= " + geo + ", unit=" + unit + ";");
         for(int i = 0; i< differenza_anni; i++ )
             record.append(" anno=").append(2008 + i).append(" valori =").append(time[i]).append(";");
-        record.append('}');//ciclo per accodare i valori annuali alla stringa di ritorno
         return record.toString();
     }
 }

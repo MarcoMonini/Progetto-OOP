@@ -29,9 +29,9 @@ import java.util.Map;
  */
 @Service
 public class Download {
-    private static List<CasiLegali> record = new ArrayList<>();        //Lista di oggetti NottiNazione
+    private static List<CasiLegali> record = new ArrayList<>();        //Lista di oggetti Casi Legali
     private final static String TAB_DELIMITER = "\t";
-    private static List<Map> Lista = new ArrayList();//Lista per i Metadata
+    private static List<Map> Lista = new ArrayList();            //Lista per i Metadata
     static List<String> time = new ArrayList<>();
 
     /**
@@ -41,12 +41,12 @@ public class Download {
      */
     public Download() throws IOException {
         String fileTSV = "dataset.tsv";
-        for(int i = 0; i < CasiLegali.differenza_anni; i++)
+        for(int i = 0; i < CasiLegali.differenza_anni; i++)      //Inizializzo il vettore tempo
             time.add(Integer.toString((2007+i)));
         if (Files.exists(Paths.get(fileTSV)))
             System.out.println("Dataset ricaricato da locale");
         else {
-            String url = "http://data.europa.eu/euodp/data/api/3/action/package_show?id=CLfXgIIz02XfA2MTjWgjSQ";
+            String url = "http://data.europa.eu/euodp/data/api/3/action/package_show?id=7SKEdXk2i1tLAgY0rDBbA";
             try {
                 URLConnection openConnection = new URL(url).openConnection();
                 openConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
@@ -138,9 +138,9 @@ public class Download {
                 linea = linea.replace("u", "");      //Sostituisce "u" con ""
                 linea = linea.replace("b","");
                 String[] lineaSplittata = linea.trim().split(TAB_DELIMITER);             //Separa la linea tutte le volte che incontra il tab
-                String c_resid = lineaSplittata[0].trim();                                     //Trim toglie gli spazi prima e dopo la stringa
+                String leg_case = lineaSplittata[0].trim();                                     //Trim toglie gli spazi prima e dopo la stringa
                 String unit = lineaSplittata[1].trim();
-                String nace_r2 = lineaSplittata[2].trim();
+                String leg_stat = lineaSplittata[2].trim();
                 String geo = lineaSplittata[3].trim();
                 float[] time = new float[CasiLegali.differenza_anni];
                 for(int i = 0; i < CasiLegali.differenza_anni; i++) {
@@ -149,7 +149,7 @@ public class Download {
                     else
                         time[i] = 0;                                                      //Per i time che non ci sono dopo lineaSplittata aggiunge "0"
                 }
-                CasiLegali oggettoParsato = new CasiLegali(c_resid, unit, nace_r2, geo, time);
+                CasiLegali oggettoParsato = new CasiLegali(leg_case, leg_stat, unit, geo, time);
                 record.add(oggettoParsato);         //Aggiungo oggettoParsato alla lista
             }
         } catch (IOException e){
@@ -175,8 +175,8 @@ public class Download {
         for (Field f : fields) {
             Map<String, String> map = new HashMap<>();
             map.put("Alias", f.getName());      //Aggiunge alla mappa la chiave alias
-            map.put("sourceField", lineaSplittata[i]);    //Prende il nome del campo nel file tsv
-            map.put("type", f.getType().getSimpleName());   //Prende il tipo di dato e lo inserisce nella mappa
+            map.put("SourceField", lineaSplittata[i]);    //Prende il nome del campo nel file tsv
+            map.put("Type", f.getType().getSimpleName());   //Prende il tipo di dato e lo inserisce nella mappa
             Lista.add(map);             //Aggiunge la mappa alla lista "Lista"
             i++;
         }
@@ -196,7 +196,7 @@ public class Download {
      *
      * @return anni
      */
-    public List getAnni(){
+    public List getTime(){
         return time;
     }
 
@@ -231,8 +231,8 @@ public class Download {
             Se questo è vero allora inserisco dentro dentro "ob" i valori relativi al nome del campo inserito
              */
             if(time.contains(nomeCampo)){
-                for(CasiLegali notti : record){
-                    Object ob= notti.getTime()[Integer.parseInt(nomeCampo)-2000]; //considero solo l'elemento che mi interessa del metodo get
+                for(CasiLegali casi : record){
+                    Object ob= casi.getTime()[Integer.parseInt(nomeCampo)-2000]; //considero solo l'elemento che mi interessa del metodo get
                     listField.add(ob);
                 }
             }
@@ -240,11 +240,11 @@ public class Download {
             Nel caso in cui il nome del campo non sia un anno:
             Scorro tutti gli oggetti all'interno della classe record e vado ad estrarre
             i valori del campo relativo al nome del campo inserito dall'utente.
-            All'interno del ciclo viene caricato l'oggetto relativo al campo da
+            All'interno del ciclo viene caricato l'oggetto relativo al campo
              */
             else {
                 //serve per scorrere tutti gli oggetti ed estrarre i valori del campo nomeCampo
-                for (CasiLegali casiLegali : record) {
+                for (CasiLegali casi : record) {
                     Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1)); //costruisco il metodo get del modello di riferimento
                     Object value = getter.invoke(record); //invoco il metodo get sull'oggetto della classe modellante
                     listField.add(value); //aggiungo il valore alla lista

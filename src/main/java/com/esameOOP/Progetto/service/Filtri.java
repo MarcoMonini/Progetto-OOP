@@ -1,5 +1,6 @@
 package com.esameOOP.Progetto.service;
 
+import com.esameOOP.Progetto.Modello.CasiLegali;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,11 +24,11 @@ public abstract class Filtri {
      */
 
     private static boolean check(Object value, String operation, Object reference) {
-        if (operatori.contains(operation)) { // verifica che l'operatore sia uno di quelli gestiti
-            if (value instanceof Number) { // caso in cui il valore da controllare sia un numero
-                double valueNum = ((Number) value).doubleValue();//cast in double
-                if (reference instanceof Number) {//caso in cui anche il riferimento sia un numero
-                    double rifNum = ((Number) reference).doubleValue();//cast in double
+        if (operatori.contains(operation)) {                      // verifica che l'operatore sia uno di quelli gestiti
+            if (value instanceof Number) {                        // caso in cui il valore da controllare sia un numero
+                double valueNum = ((Number) value).doubleValue();            //cast in double
+                if (reference instanceof Number) {                      //caso in cui anche il riferimento sia un numero
+                    double rifNum = ((Number) reference).doubleValue();            //cast in double
                     switch (operation) {
                         case "$not":
                             return valueNum != rifNum;
@@ -43,20 +44,20 @@ public abstract class Filtri {
                             String erroreOper = "L'operatore: '" + operation + "' risulta non funzionante per gli operandi: '" + value + "' , '" + reference + "'";
                             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, erroreOper);//restituisce il messaggio di errore in formato JSON
                     }
+
                 } else if (reference instanceof List) { // riferimento risulta essere una lista
                     List rifL = ((List) reference);
                     if (!rifL.isEmpty() && rifL.get(0) instanceof Number) { // la lista deve essere non vuota e deve contenere numeri
-
                         List<Double> leftReferenceNum = new ArrayList<>();//conversione
                         for (Object elem : rifL) {
                             leftReferenceNum.add(((Number) elem).doubleValue());// conversione di ogni singolo elemento
                         }
                         switch (operation) {
-                            case "$in":
+                            case "$in":                              //L'Operatore Logico associa ogni valore nell'array
                                 return leftReferenceNum.contains(valueNum);
-                            case "$nin":
+                            case "$nin":                             //L'Operatore Logico non associa alcun valore nell'array
                                 return !leftReferenceNum.contains(valueNum);
-                            case "$bt":
+                            case "$bt":                              //Operatore Condizionale
                                 double first = leftReferenceNum.get(0);
                                 double second = leftReferenceNum.get(1);
                                 return valueNum >= first && valueNum <= second;
@@ -122,9 +123,9 @@ public abstract class Filtri {
     public static List<Integer> filtra(List val, String oper, Object rif) {
         List<Integer> filtrati = new ArrayList<>();
         for (int i = 0; i < val.size(); i++) {
-            if (check(val.get(i), oper, rif))//controllo per ogni elemento della lista
+            if (check(val.get(i), oper, rif))                 //Controllo per ogni elemento della lista
                 filtrati.add(i);
         }
-        return filtrati; // restituisco la lista con gli indici
+        return filtrati;                     //Restituisco la lista con gli indici
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Classe Statistics
- * restituisce statistiche sui dati informato JSON
+ * restituisce statistiche sui dati in formato JSON
  */
 public abstract  class Statistiche {
 
@@ -103,6 +103,13 @@ public abstract  class Statistiche {
         return mappa;
     }
 
+    /**
+     * Metodo get che restituisce tutte le statistiche relative ad un campo
+     *
+     * @param nomeCampo
+     * @param lista
+     * @return
+     */
 
     public static Map<String, Object> getAllStatistics(String nomeCampo, List lista){
         Map<String, Object> mappa = new HashMap<>();

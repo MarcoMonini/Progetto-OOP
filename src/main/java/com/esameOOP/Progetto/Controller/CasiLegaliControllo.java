@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class Controller {
+public class CasiLegaliControllo {
     private Download service;
 
     /**
@@ -21,7 +21,7 @@ public class Controller {
      * @param service
      */
     @Autowired
-    public Controller(Download service) {
+    public CasiLegaliControllo(Download service) {
         this.service = service;
     }
 
@@ -40,9 +40,9 @@ public class Controller {
      *
      * @return "anni" ovvero una lista di string
      */
-    @GetMapping("/getAnni")
+    @GetMapping("/getTime")
     public List getAnni() {
-        return service.getAnni();
+        return service.getTime();
     }
 
     /**
@@ -66,21 +66,13 @@ public class Controller {
         return service.getRecord(i);
     }
 
-    /**
-     *
-     *
-     * @param nameField
-     * @return
-     */
 
     @GetMapping("/getStatistiche")
     public List getStatistiche(@RequestParam(value = "Field", required = false, defaultValue = "") String nameField) {
         if (nameField.equals(""))
             return service.getAllFieldStatistics();
         else {
-            List list = null;
-            list.add(Statistiche.getAllStatistics(nameField, service.getField(nameField)));
-            return list;
+            return service.getField(nameField);
         }
 
     }
