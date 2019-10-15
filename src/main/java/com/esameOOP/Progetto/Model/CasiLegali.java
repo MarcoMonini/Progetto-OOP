@@ -5,7 +5,7 @@ import java.io.Serializable;
 /*Classe modellante dataset
 */
 
-public class CasiLegali implements Serializable {       //Serializable permette di salvare gli oggetti della classe su file
+public class CasiLegali implements Serializable {       //Serializable permette di salvare gli oggetti della classe su un file
 
     public String leg_case, leg_stat, unit, geo;
     public float[] time;
@@ -26,42 +26,22 @@ public class CasiLegali implements Serializable {       //Serializable permette 
         this.time = time;
     }
 
-    /**
-     * Metodo get per leg_case
-     * @return
-     */
     public String getLeg_case() {
         return leg_case;
     }
 
-    /**
-     * Metodo get per leg_stat
-     * @return
-     */
     public String getLeg_stat() {
         return leg_stat;
     }
 
-    /**
-     * Metodo get per getUnit
-     * @return
-     */
     public String getUnit() {
         return unit;
     }
 
-    /**
-     * Metodo get per geo
-     * @return
-     */
     public String getGeo() {
         return geo;
     }
 
-    /**
-     * Metodo get per time
-     * @return
-     */
     public float[] getTime() {
         return time;
     }
