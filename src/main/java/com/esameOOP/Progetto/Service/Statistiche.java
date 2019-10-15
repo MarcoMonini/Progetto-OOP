@@ -1,4 +1,4 @@
-package com.esameOOP.Progetto.service;
+package com.esameOOP.Progetto.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;

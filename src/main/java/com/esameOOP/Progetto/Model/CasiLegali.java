@@ -1,4 +1,4 @@
-package com.esameOOP.Progetto.Modello;
+package com.esameOOP.Progetto.Model;
 
 import java.io.Serializable;
 

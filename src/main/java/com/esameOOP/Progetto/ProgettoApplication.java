@@ -1,6 +1,6 @@
 package com.esameOOP.Progetto;
 
-import com.esameOOP.Progetto.service.Download;
+import com.esameOOP.Progetto.Service.Download;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

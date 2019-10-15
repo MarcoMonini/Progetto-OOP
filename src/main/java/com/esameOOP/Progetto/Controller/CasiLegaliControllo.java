@@ -1,8 +1,7 @@
 package com.esameOOP.Progetto.Controller;
 
-import com.esameOOP.Progetto.Modello.CasiLegali;
-import com.esameOOP.Progetto.service.Download;
-import com.esameOOP.Progetto.service.Statistiche;
+import com.esameOOP.Progetto.Model.CasiLegali;
+import com.esameOOP.Progetto.Service.Download;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

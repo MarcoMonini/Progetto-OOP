@@ -1,6 +1,6 @@
-package com.esameOOP.Progetto.service;
+package com.esameOOP.Progetto.Service;
 
-import com.esameOOP.Progetto.Modello.CasiLegali;
+import com.esameOOP.Progetto.Model.CasiLegali;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;

@@ -1,6 +1,5 @@
-package com.esameOOP.Progetto.service;
+package com.esameOOP.Progetto.Service;
 
-import com.esameOOP.Progetto.Modello.CasiLegali;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
