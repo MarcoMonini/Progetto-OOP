@@ -29,32 +29,32 @@ import java.util.Map;
  */
 @Service
 public class Download {
-    private static List<CasiLegali> record = new ArrayList<>();        //Lista di oggetti Casi Legali
+    private static List<CasiLegali> record = new ArrayList<>();     //Lista di oggetti CasiLegali
     private final static String TAB_DELIMITER = "\t";
-    private static List<Map> Lista = new ArrayList();            //Lista per i Metadata
-    static List<String> time = new ArrayList<>();
+    private static List<Map> Lista = new ArrayList();               //Lista per i Metadata
+    static List<String> time = new ArrayList<>();                   //lista per i valori durante i vari anni
 
     /**
      * Costruttore della classe Download
-     *
+     *Effettua il download e il parsing del tsv
      * @throws IOException
      */
     public Download() throws IOException {
-        String fileTSV = "dataset.tsv";
-        for(int i = 0; i < CasiLegali.differenza_anni; i++)      //Inizializzo il vettore tempo
-            time.add(Integer.toString((2007+i)));
-        if (Files.exists(Paths.get(fileTSV)))
-            System.out.println("Dataset ricaricato da locale");
+        String fileTSV = "dataset.tsv";                         //file in cui salvare il file tsv
+        for(int i = 0; i < CasiLegali.differenza_anni; i++)     //Inizializzo il vettore tempo
+            time.add(Integer.toString((2008+i)));               //riempio la lista con gli anni gestiti
+        if (Files.exists(Paths.get(fileTSV)))                   //verifico l'esistenza del file in locale
+            System.out.println("Dataset ricaricato da locale"); //carica il file da locale se esiste
         else {
             String url = "http://data.europa.eu/euodp/data/api/3/action/package_show?id=7SKEdXk2i1tLAgY0rDBbA";
             try {
-                URLConnection openConnection = new URL(url).openConnection();
-                openConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+                URLConnection openConnection = new URL(url).openConnection();   //apro connessione ad url della mail
+                openConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0"); //aggiungo user-aget alla connessione
                 InputStream in = openConnection.getInputStream();
 
                 String data = "";
                 String line = "";
-                try {
+                try {   //lettura JSON e salvataggio su stringa
                     InputStreamReader inR = new InputStreamReader( in );
                     BufferedReader buf = new BufferedReader( inR );
 
@@ -70,31 +70,31 @@ public class Download {
                 JSONObject objI = (JSONObject) (obj.get("result"));
                 JSONArray objA = (JSONArray) (objI.get("resources"));
 
-                for (Object o : objA) {
+                for (Object o : objA) { //scorro tutti gli oggetti fino a trovare quello di formato corretto
                     if (o instanceof JSONObject) {
-                        JSONObject o1 = (JSONObject) o;
-                        String format = (String) o1.get("format");
+                        JSONObject o1 = (JSONObject) o;             //converto il generico Object in JSONobject
+                        String format = (String) o1.get("format");  //mi sposto all'interno del JSON per trovare l'url desiderato
                         String urlD = (String) o1.get("url");
                         System.out.println(format + " | " + urlD);
-                        if (format.toLowerCase().contains("tsv")) {
-                            //downloadTSV(urlD, fileName);
-                            downloadTSV(urlD, fileTSV);
+                        if (format.toLowerCase().contains("tsv")) { //verifico che il formato sia quello desiderato
+                            downloadTSV(urlD, fileTSV);             //effettuo il download del TSV
                         }
                     }
                 }
-                System.out.println("OK");
+                System.out.println("Download effettuato");
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        Parsing(fileTSV);
+        Parsing(fileTSV);   //effettua il parsing
         Metadata(fileTSV);
     }
 
     /**
-     * Metodo che gestisce un problema di redirect del sito che gestisce i dati
+     * Metodo che effettua il download del TSV su file locale passato come parametro
+     * e gestisce un problema di redirect del sito che gestisce i dati
      *
      * @param url url del sito dal quale scaricare il file
      * @param fileName nome del file
@@ -130,24 +130,20 @@ public class Download {
             bRead.readLine();                  //Legge una riga a vuoto per saltare l'intestazione
             String linea;
             int a;
-            while((linea = bRead.readLine()) != null) {                 //Ciclo che continua fintanto che non trova una linea nulla
-                linea = linea.replace(",", TAB_DELIMITER);       //Sostituisce le virgole con i tab "\t"
-                linea = linea.replace(":","0");      //Sostituisce i ":" con "0"
-                linea = linea.replace("e","");       //Sostituisce "e" con ""
-                linea = linea.replace("c", "");      //Sostituisce "c" con ""
-                linea = linea.replace("u", "");      //Sostituisce "u" con ""
-                linea = linea.replace("b","");
-                String[] lineaSplittata = linea.trim().split(TAB_DELIMITER);             //Separa la linea tutte le volte che incontra il tab
-                String leg_case = lineaSplittata[0].trim();                                     //Trim toglie gli spazi prima e dopo la stringa
+            while((linea = bRead.readLine()) != null) {                          //Ciclo che continua fintanto che non trova una linea nulla
+                linea = linea.replace(",", TAB_DELIMITER);                //Sostituisce le virgole con i tab "\t"
+                linea = linea.replace(":","0");               //Sostituisce i ":" con "0"
+                String[] lineaSplittata = linea.trim().split(TAB_DELIMITER);    //uso split per dividere la riga in corrispondenza dei separatori
+                String leg_case = lineaSplittata[0].trim();                     //Trim toglie gli spazi prima e dopo la stringa
                 String unit = lineaSplittata[1].trim();
                 String leg_stat = lineaSplittata[2].trim();
                 String geo = lineaSplittata[3].trim();
-                float[] time = new float[CasiLegali.differenza_anni];
+                float[] time = new float[CasiLegali.differenza_anni];                   //vettore di float che conterrà i valori nei vari anni
                 for(int i = 0; i < CasiLegali.differenza_anni; i++) {
-                    if (4 + i < lineaSplittata.length)                               //Gestione errore java.lang.ArrayIndexOutOfBoundsException
-                        time[i] = Float.parseFloat(lineaSplittata[4 + i].trim());       //Inserisce i time della tabella dentro il vettore
+                    if (4 + i < lineaSplittata.length)                                  //Gestione errore java.lang.ArrayIndexOutOfBoundsException
+                        time[i] = Float.parseFloat(lineaSplittata[4 + i].trim());       //Inserisce i valori della tabella dentro il vettore
                     else
-                        time[i] = 0;                                                      //Per i time che non ci sono dopo lineaSplittata aggiunge "0"
+                        time[i] = 0;                                                      //Per i valori che non ci sono dopo lineaSplittata aggiunge "0"
                 }
                 CasiLegali oggettoParsato = new CasiLegali(leg_case, leg_stat, unit, geo, time);
                 record.add(oggettoParsato);         //Aggiungo oggettoParsato alla lista
@@ -164,20 +160,20 @@ public class Download {
      * @throws IOException
      */
     private void Metadata(String fileTSV) throws IOException {
-        Field[] fields = CasiLegali.class.getDeclaredFields();    //Estrae le variabili della classe NottiNazione
-        BufferedReader bR = new BufferedReader(new FileReader(fileTSV));         //Apre il bufferedReader
-        String linea = bR.readLine();           //Legge la prima riga
-        linea = linea.replace(",", TAB_DELIMITER);     //Sostituisce alla prima linea tutte le "," con "\t"
-        linea = linea.replace("\\", TAB_DELIMITER);     //Sostituisce alla prima linea \ con tab
-        String[] lineaSplittata = linea.trim().split(TAB_DELIMITER);     //Separa la stringa tutte le volte che incontra "\t"
+        Field[] fields = CasiLegali.class.getDeclaredFields();              //Estrae le variabili della classe NottiNazione
+        BufferedReader bR = new BufferedReader(new FileReader(fileTSV));    //Apre il bufferedReader
+        String linea = bR.readLine();                                       //Legge la prima riga
+        linea = linea.replace(",", TAB_DELIMITER);                   //Sostituisce alla prima linea tutte le "," con "\t"
+        linea = linea.replace("\\", TAB_DELIMITER);                  //Sostituisce alla prima linea \ con tab
+        String[] lineaSplittata = linea.trim().split(TAB_DELIMITER);        //Separa la stringa tutte le volte che incontra "\t"
         int i = 0;
 
         for (Field f : fields) {
             Map<String, String> map = new HashMap<>();
-            map.put("Alias", f.getName());      //Aggiunge alla mappa la chiave alias
-            map.put("SourceField", lineaSplittata[i]);    //Prende il nome del campo nel file tsv
+            map.put("Alias", f.getName());                  //Aggiunge alla mappa la chiave alias
+            map.put("SourceField", lineaSplittata[i]);      //Prende il nome del campo nel file tsv
             map.put("Type", f.getType().getSimpleName());   //Prende il tipo di dato e lo inserisce nella mappa
-            Lista.add(map);             //Aggiunge la mappa alla lista "Lista"
+            Lista.add(map);                                 //Aggiunge la mappa alla lista "Lista"
             i++;
         }
     }
@@ -187,7 +183,7 @@ public class Download {
      *
      * @return record
      */
-    public List<CasiLegali> getRecord(){
+    public List<CasiLegali> getData(){
         return record;
     }
 
@@ -216,7 +212,7 @@ public class Download {
      * @param i
      * @return
      */
-    public CasiLegali getRecord(int i){
+    public CasiLegali getData(int i){
         if(i < record.size()) return record.get(i);
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Oggetto di indice " + i + " non esiste!");
     }
@@ -246,8 +242,8 @@ public class Download {
                 //serve per scorrere tutti gli oggetti ed estrarre i valori del campo nomeCampo
                 for (CasiLegali casi : record) {
                     Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1)); //costruisco il metodo get del modello di riferimento
-                    Object value = getter.invoke(record); //invoco il metodo get sull'oggetto della classe modellante
-                    listField.add(value); //aggiungo il valore alla lista
+                    Object value = getter.invoke(record);       //invoco il metodo get sull'oggetto della classe modellante
+                    listField.add(value);                       //aggiungo il valore alla lista
                 }
             }
         } catch (NoSuchMethodException e) {
@@ -272,5 +268,5 @@ public class Download {
         }
         return list;
     }
-    }
+}
 

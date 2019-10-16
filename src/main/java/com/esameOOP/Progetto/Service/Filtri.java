@@ -132,3 +132,4 @@ public abstract class Filtri {
         return filtrati;                     //Restituisco la lista con gli indici
     }
 }
+

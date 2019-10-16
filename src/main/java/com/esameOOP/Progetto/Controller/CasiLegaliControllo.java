@@ -34,7 +34,7 @@ public class CasiLegaliControllo {
      */
     @GetMapping("/getRecord")
     public List getRecord() {
-        return service.getRecord();
+        return service.getData();
     }
 
     /**
@@ -65,7 +65,7 @@ public class CasiLegaliControllo {
      */
     @GetMapping("/getRecord/{i}")
     public CasiLegali getCasiLegali(@PathVariable int i) {
-        return service.getRecord(i);
+        return service.getData(i);
     }
 
     /**
