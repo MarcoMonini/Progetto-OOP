@@ -75,7 +75,7 @@ public abstract class Filtri {
                 String valueStr = ((String) value);//conversione
                 if (reference instanceof String) { //se il riferimento è una stringa
                     String rifStr = ((String) reference); //conversione
-                    if (operation == "$not") {
+                    if (operation.equals("$not")) {
                         return  !valueStr.equals(rifStr);
                     }
                     String erroreOper = "L'operatore:'" + operation + "' risulta inadatto per gli operandi: '" + value + "' , '" + reference + "'";
@@ -123,7 +123,7 @@ public abstract class Filtri {
      * @param rif   valore di riferimento
      * @return lista di interi contente gli indici dei valori che soddisfano il filtro
      */
-    public static List<Integer> filtra(List val, String oper, Object rif) {
+    static List<Integer> filtra(List val, String oper, Object rif) {
         List<Integer> filtrati = new ArrayList<>();
         for (int i = 0; i < val.size(); i++) {
             if (check(val.get(i), oper, rif))       //Controllo per ogni elemento della lista

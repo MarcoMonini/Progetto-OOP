@@ -14,7 +14,6 @@ public class ProgettoApplication {
 	 * Chiama il costruttore della classe Download che avvia il download del dataset
 	 * La classe main avvia il server web locale sulla porta 8080 ricorrendo a spring
 	 *
-	 * @param args
 	 */
 
 	public static void main(String[] args) throws IOException {

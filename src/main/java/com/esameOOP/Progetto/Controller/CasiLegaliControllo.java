@@ -22,7 +22,6 @@ public class CasiLegaliControllo {
      * che con l'annotazoine @Autovired viene lanciato automaticamente all'avvio da Spring
      * e esegue il collegamento al Service
      *
-     * @param service
      */
     @Autowired //stiamo dichiarando che il controllore dipende da service, ovvero stiamo iniettando una dipendenza
     public CasiLegaliControllo(Download service) { this.service = service; }
@@ -86,7 +85,6 @@ public class CasiLegaliControllo {
          * Metodo get che restituisce il record filtrato passando il body al metodo
          *
          * @param body body
-         * @return
          */
         @PostMapping("/getFilteredRecord")
         public List getFilteredRecord(@RequestBody String body){
@@ -103,7 +101,7 @@ public class CasiLegaliControllo {
          * @param body body
          * @return filter, restituisce la mappa filtro
          */
-        public Map<String, Object> parsingFilter(String body){
+        private Map<String, Object> parsingFilter(String body){
             Map<String, Object> bodyParsato = new BasicJsonParser().parseMap(body);
             String nameField = bodyParsato.keySet().toArray(new String[0])[0];
             System.out.println(nameField);

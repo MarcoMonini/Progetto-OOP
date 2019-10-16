@@ -7,16 +7,11 @@ import java.io.Serializable;
 
 public class CasiLegali implements Serializable {       //Serializable permette di salvare gli oggetti della classe su un file
 
-    public String leg_case, leg_stat, unit, geo;
-    public float[] time;
+    private String leg_case, leg_stat, unit, geo;
+    private float[] time;
     public static final int differenza_anni =  9;
     /**
      * Costruttore della classe Oggetto
-     * @param leg_case
-     * @param leg_stat
-     * @param unit
-     * @param geo
-     * @array time
      */
     public CasiLegali(String leg_case, String leg_stat, String unit, String geo, float[] time){
         this.leg_case = leg_case;

@@ -17,7 +17,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,6 @@ public class Download {
     /**
      * Costruttore della classe Download
      *Effettua il download e il parsing del tsv
-     * @throws IOException
      */
     public Download() throws IOException {
         String fileTSV = "dataset.tsv";                         //file in cui salvare il file tsv
@@ -66,7 +64,7 @@ public class Download {
                     in.close();
                 }
                 //Conversione StringBuilder in oggetto JSON
-                JSONObject obj = (JSONObject) JSONValue.parseWithException(data.toString());
+                JSONObject obj = (JSONObject) JSONValue.parseWithException(data);
                 JSONObject objI = (JSONObject) (obj.get("result"));
                 JSONArray objA = (JSONArray) (objI.get("resources"));
 
@@ -82,8 +80,6 @@ public class Download {
                     }
                 }
                 System.out.println("Download effettuato");
-            } catch (IOException | ParseException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -98,7 +94,6 @@ public class Download {
      *
      * @param url url del sito dal quale scaricare il file
      * @param fileName nome del file
-     * @throws Exception
      */
     public static void downloadTSV(String url, String fileName) throws Exception {
         HttpURLConnection openConnection = (HttpURLConnection) new URL(url).openConnection();
@@ -129,7 +124,6 @@ public class Download {
         try(BufferedReader bRead = new BufferedReader(new FileReader(fileTSV))){
             bRead.readLine();                  //Legge una riga a vuoto per saltare l'intestazione
             String linea;
-            int a;
             while((linea = bRead.readLine()) != null) {                          //Ciclo che continua fintanto che non trova una linea nulla
                 linea = linea.replace(",", TAB_DELIMITER);                //Sostituisce le virgole con i tab "\t"
                 linea = linea.replace(":","0");               //Sostituisce i ":" con "0"
@@ -157,7 +151,6 @@ public class Download {
      * Metodo per la creazione dei metadati
      *
      * @param fileTSV   Stringa con il nome del file tsv
-     * @throws IOException
      */
     private void Metadata(String fileTSV) throws IOException {
         Field[] fields = CasiLegali.class.getDeclaredFields();              //Estrae le variabili della classe NottiNazione
@@ -209,8 +202,6 @@ public class Download {
     /**
      * Metodo che restituisce il record all'indice i
      *
-     * @param i
-     * @return
      */
     public CasiLegali getData(int i){
         if(i < record.size()) return record.get(i);
@@ -242,7 +233,7 @@ public class Download {
                 //serve per scorrere tutti gli oggetti ed estrarre i valori del campo nomeCampo
                 for (CasiLegali casi : record) {
                     Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1)); //costruisco il metodo get del modello di riferimento
-                    Object value = getter.invoke(record);       //invoco il metodo get sull'oggetto della classe modellante
+                    Object value = getter.invoke(casi);       //invoco il metodo get sull'oggetto della classe modellante
                     listField.add(value);                       //aggiungo il valore alla lista
                 }
             }
@@ -268,14 +259,7 @@ public class Download {
         }
         return list;
     }
-    /**
-     *
-     *
-     * @param nameField
-     * @param operator
-     * @param reference
-     * @return
-     */
+
     public List<CasiLegali> getFilteredRecord(String nameField, String operator, Object reference) {
         List<Integer> filteredList = Filtri.filtra(getField(nameField), operator, reference);
         List<CasiLegali> filtered = new ArrayList<>();
