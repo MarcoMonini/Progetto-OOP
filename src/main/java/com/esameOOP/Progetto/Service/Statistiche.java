@@ -14,20 +14,18 @@ public abstract  class Statistiche {
     /**
      * Metodo avg
      *
-     * @param lista
      * @return  restituisce la media della lista
      */
-    public static double avg (List<Double> lista){
+    private static double avg(List<Double> lista){
         return sum(lista) / count(lista) ;
     }
 
     /**
      * Metodo min
      *
-     * @param lista
      * @return restituisce il minimo della lista
      */
-    public static double min(List<Double> lista) {
+    private static double min(List<Double> lista) {
         double min = lista.get(0);
         for(Double num : lista ){
             if (num < min) min = num;
@@ -38,10 +36,9 @@ public abstract  class Statistiche {
     /**
      * Metodo max
      *
-     * @param lista
      * @return restituisce il massimo di una lista
      */
-    public static double max (List<Double> lista) {
+    private static double max(List<Double> lista) {
         double max = lista.get(0);
         for (Double num : lista) {
             if (num > max) max = num;
@@ -52,10 +49,9 @@ public abstract  class Statistiche {
     /**
      * Metodo devStd
      *
-     * @param lista
      * @return restituisce la deviazione standard
      */
-    public static double devStd(List<Double> lista) {
+    private static double devStd(List<Double> lista) {
         double avg = avg(lista) ;
         double var = 0;
         for (Double num : lista ) {
@@ -67,10 +63,9 @@ public abstract  class Statistiche {
     /**
      * Metodo sum
      *
-     * @param lista
      * @return restituisce la somma degli elementi della lista
      */
-    public static double sum(List<Double> lista) {
+    private static double sum(List<Double> lista) {
         double s = 0 ;
         for(Double n : lista) {
             s += n;
@@ -81,20 +76,18 @@ public abstract  class Statistiche {
     /**
      * Metodo count
      *
-     * @param lista
      * @return restituisce la lunghezza della lista
      */
-    public static int count(List lista){
+    private static int count(List lista){
         return lista.size();
     }
 
     /**
      * Metodo contaElementiUnici
      *
-     * @param lista
      * @return restituisce il numero degli elementi unici
      */
-    public static Map<Object,Integer> contaElementiUnici(List lista){
+    private static Map<Object,Integer> contaElementiUnici(List lista){
         Map<Object, Integer> mappa = new HashMap<>();
         for (Object obj : lista){
             Integer numero = mappa.get(0);
@@ -106,10 +99,7 @@ public abstract  class Statistiche {
     /**
      * Metodo get che restituisce tutte le statistiche relative ad un campo
      *
-     * @param nomeCampo
-     * @param lista
-     * @return
-     */
+    */
 
     public static Map<String, Object> getAllStatistics(String nomeCampo, List lista){
         Map<String, Object> mappa = new HashMap<>();
