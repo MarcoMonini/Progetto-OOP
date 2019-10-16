@@ -268,5 +268,21 @@ public class Download {
         }
         return list;
     }
+    /**
+     *
+     *
+     * @param nameField
+     * @param operator
+     * @param reference
+     * @return
+     */
+    public List<CasiLegali> getFilteredRecord(String nameField, String operator, Object reference) {
+        List<Integer> filteredList = Filtri.filtra(getField(nameField), operator, reference);
+        List<CasiLegali> filtered = new ArrayList<>();
+        for (int i : filteredList) {
+            filtered.add(record.get(i));
+        }
+        return filtered;
+    }
 }
 

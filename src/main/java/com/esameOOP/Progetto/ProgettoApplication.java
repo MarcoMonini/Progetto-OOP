@@ -18,8 +18,8 @@ public class ProgettoApplication {
 	 */
 
 	public static void main(String[] args) throws IOException {
-		new Download();                   //Fa partire il costruttore della classe Download
-		SpringApplication.run(ProgettoApplication.class, args);            //Avvia il server in locale
+		new Download();                                             //Fa partire il costruttore della classe Download
+		SpringApplication.run(ProgettoApplication.class, args);     //Avvia il server in locale
 	}
 
 }
