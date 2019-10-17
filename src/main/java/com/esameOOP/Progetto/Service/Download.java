@@ -95,7 +95,7 @@ public class Download {
      * @param url url del sito dal quale scaricare il file
      * @param fileName nome del file
      */
-    public static void downloadTSV(String url, String fileName) throws Exception {
+    private static void downloadTSV(String url, String fileName) throws Exception {
         HttpURLConnection openConnection = (HttpURLConnection) new URL(url).openConnection();
         openConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
         InputStream in = openConnection.getInputStream();
