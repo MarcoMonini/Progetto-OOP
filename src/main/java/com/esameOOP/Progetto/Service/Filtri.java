@@ -123,7 +123,7 @@ public abstract class Filtri {
      * @param rif   valore di riferimento
      * @return lista di interi contente gli indici dei valori che soddisfano il filtro
      */
-    static List<Integer> filtra(List val, String oper, Object rif) {
+    public static List<Integer> filtra(List val, String oper, Object rif) {
         List<Integer> filtrati = new ArrayList<>();
         for (int i = 0; i < val.size(); i++) {
             if (check(val.get(i), oper, rif))       //Controllo per ogni elemento della lista

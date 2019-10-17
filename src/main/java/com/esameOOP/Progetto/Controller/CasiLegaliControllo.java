@@ -2,10 +2,13 @@ package com.esameOOP.Progetto.Controller;
 
 import com.esameOOP.Progetto.Model.CasiLegali;
 import com.esameOOP.Progetto.Service.Download;
+import com.esameOOP.Progetto.Service.Filtri;
+import com.esameOOP.Progetto.Service.Statistiche;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.BasicJsonParser;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +83,16 @@ public class CasiLegaliControllo {
         else {
             return service.getField(nameField);
         }
+    }
+    @PostMapping("/getFilteredStatistiche")
+    public Map getFilteredStatistiche(@RequestParam(value = "Field", required = false, defaultValue = "") String fieldStatistics, @RequestBody String body){
+        Map<String, Object> filter = parsingFilter(body);                               //Effettua il parsing del body
+        List<CasiLegali> filteredRecord = new ArrayList<>();
+        List<Integer> filteredIndici = Filtri.filtra(service.getField((String) filter.get("Field")), (String) filter.get("Operator"), filter.get("Reference"));         //Richiama la funzione filtra all'interno della classe Filtri che filtra il campo passato dall'utente insieme all'operatore e al riferimento
+        for(int i : filteredIndici){                //For each che inserisce all'interno della lista filteredRecord tutti gli elementi del record filtrati
+            filteredRecord.add(service.getData(i));
+        }
+        return Statistiche.getAllStatistics(fieldStatistics, filteredRecord);
     }
         /**
          * Metodo get che restituisce il record filtrato passando il body al metodo
