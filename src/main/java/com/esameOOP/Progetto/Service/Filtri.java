@@ -112,10 +112,6 @@ public abstract class Filtri {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Operatore " + operation + " non è valido");
     }
 
-    public static List<String> getOperatori() {
-        return operatori;
-    }
-
     /**
      * Metodo per l'applicazione dei filtri ad una lista.
      * @param val   lista dei valori

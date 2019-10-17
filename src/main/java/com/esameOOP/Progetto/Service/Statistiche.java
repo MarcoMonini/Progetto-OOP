@@ -12,7 +12,7 @@ import java.util.Map;
 public abstract  class Statistiche {
 
     /**
-     * Metodo avg
+     * Metodo avg che effettua la media degli elementi nella lista
      *
      * @return  restituisce la media della lista
      */

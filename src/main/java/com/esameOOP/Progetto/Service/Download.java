@@ -42,7 +42,7 @@ public class Download {
         for(int i = 0; i < CasiLegali.differenza_anni; i++)     //Inizializzo il vettore tempo
             time.add(Integer.toString((2008+i)));               //riempio la lista con gli anni gestiti
         if (Files.exists(Paths.get(fileTSV)))                   //verifico l'esistenza del file in locale
-            System.out.println("Dataset ricaricato da locale"); //carica il file da locale se esiste
+            System.out.println("Dataset caricato da un file locale"); //carica il file da locale se esiste
         else {
             String url = "http://data.europa.eu/euodp/data/api/3/action/package_show?id=7SKEdXk2i1tLAgY0rDBbA";
             try {
@@ -116,7 +116,7 @@ public class Download {
     }
 
     /**
-     * Metodo che effettua il parsing del file tsv
+     * Metodo che effettua il parsing del file in formato TSV
      *
      * @param fileTSV  Stringa con il nome del file tsv
      */
@@ -173,8 +173,6 @@ public class Download {
 
     /**
      * Metodo che restituisce il record
-     *
-     * @return record
      */
     public List<CasiLegali> getData(){
         return record;
@@ -234,7 +232,7 @@ public class Download {
                 for (CasiLegali casi : record) {
                     Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1)); //costruisco il metodo get del modello di riferimento
                     Object value = getter.invoke(casi);       //invoco il metodo get sull'oggetto della classe modellante
-                    listField.add(value);                       //aggiungo il valore alla lista
+                    listField.add(value);                     //aggiungo il valore alla lista
                 }
             }
         } catch (NoSuchMethodException e) {
@@ -243,8 +241,14 @@ public class Download {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return listField; //ritorno la lista
+        return listField; //ritorna la lista
     }
+
+    /**
+     * Metodo che restituisce la lista di tutte le statistiche relative a tutti i campi
+     *
+     * @return lista delle statistiche
+     */
 
     public List<Map> getAllFieldStatistics() {
         Field[] fields = CasiLegali.class.getDeclaredFields();
@@ -259,6 +263,15 @@ public class Download {
         }
         return list;
     }
+
+    /**
+     * Metodo che restituisce il record filtrato rispetto al nome del campo, operatore e reference
+     *
+     * @param nameField nome del campo passato dall'utente
+     * @param operator operatore passato dall'utente
+     * @param reference oggetto passato dall'utente
+     * @return restituisce la lista con gli oggetti filtrati
+     */
 
     public List<CasiLegali> getFilteredRecord(String nameField, String operator, Object reference) {
         List<Integer> filteredList = Filtri.filtra(getField(nameField), operator, reference);
