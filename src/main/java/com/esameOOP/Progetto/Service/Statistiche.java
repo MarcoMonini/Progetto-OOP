@@ -16,7 +16,7 @@ public abstract  class Statistiche {
      *
      * @return  restituisce la media della lista
      */
-    private static double avg(List<Double> lista){
+    private static double avg(List<Double> lista) {
         return sum(lista) / count(lista) ;
     }
 

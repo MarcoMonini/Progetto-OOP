@@ -11,7 +11,7 @@ public class CasiLegali implements Serializable {       //Serializable permette 
     private float[] time;
     public static final int differenza_anni =  9;
     /**
-     * Costruttore della classe Oggetto
+     * Costruttore della classe CasiLegali
      */
     public CasiLegali(String leg_case, String leg_stat, String unit, String geo, float[] time){
         this.leg_case = leg_case;

@@ -34,7 +34,7 @@ public class CasiLegaliControllo {
      *
      * @return "record" ovvero la lista con gli oggetti del dataset
      */
-    @GetMapping("/getRecord")
+    @GetMapping("/getData")
     public List getRecord() {
         return service.getData();
     }
@@ -54,7 +54,7 @@ public class CasiLegaliControllo {
      *
      * @return "Lista" ovvero la lista nella classe Download che contiene i metadata
      */
-    @GetMapping("/getMetadati")
+    @GetMapping("/getMetadata")
     public List getMetadati() {
         return service.getMetadata();
     }
@@ -84,8 +84,8 @@ public class CasiLegaliControllo {
             return service.getField(nameField);
         }
     }
-    @PostMapping("/getFilteredStatistiche")
-    public Map getFilteredStatistiche(@RequestParam(value = "Field", required = false, defaultValue = "") String fieldStatistics, @RequestBody String body){
+    @PostMapping("/postStatisticheFiltrate")
+    public Map getFilteredStatistics(@RequestParam(value = "Field", required = false, defaultValue = "") String fieldStatistics, @RequestBody String body){
         Map<String, Object> filter = parsingFilter(body);                               //Effettua il parsing del body
         List<CasiLegali> filteredRecord = new ArrayList<>();
         List<Integer> filteredIndici = Filtri.filtra(service.getField((String) filter.get("Field")), (String) filter.get("Operator"), filter.get("Reference"));         //Richiama la funzione filtra all'interno della classe Filtri che filtra il campo passato dall'utente insieme all'operatore e al riferimento
