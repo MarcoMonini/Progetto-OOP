@@ -2,7 +2,6 @@ package com.esameOOP.Progetto.Controller;
 
 import com.esameOOP.Progetto.Model.CasiLegali;
 import com.esameOOP.Progetto.Service.Download;
-import com.esameOOP.Progetto.Service.Filtri;
 import com.esameOOP.Progetto.Service.Statistiche;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.BasicJsonParser;
@@ -44,7 +43,7 @@ public class CasiLegaliControllo {
      *
      * @return "anni" ovvero una lista di string
      */
-    @GetMapping("/getTime")
+    @GetMapping("/getAnni")
     public List getAnni() {
         return service.getTime();
     }
@@ -65,7 +64,7 @@ public class CasiLegaliControllo {
      * @param i indice della lista che si vuole ottenere
      * @return "record" ovvero la lista con gli oggetti CasiLegali
      */
-    @GetMapping("/getRecord/{i}")
+    @GetMapping("/getData/{i}")
     public CasiLegali getCasiLegali(@PathVariable int i) {
         return service.getData(i);
     }
@@ -79,34 +78,12 @@ public class CasiLegaliControllo {
     @GetMapping("/getStatistiche")
     public List getStatistiche(@RequestParam(value = "Field", required = false, defaultValue = "") String nameField) {
         if (nameField.equals(""))
-            return service.getAllFieldStatistics();
+            return service.getAllStatisticheCampo();
         else {
-            return service.getField(nameField);
+            return service.getCampo(nameField);
         }
     }
-    @PostMapping("/postStatisticheFiltrate")
-    public Map getFilteredStatistics(@RequestParam(value = "Field", required = false, defaultValue = "") String fieldStatistics, @RequestBody String body){
-        Map<String, Object> filter = parsingFilter(body);                               //Effettua il parsing del body
-        List<CasiLegali> filteredRecord = new ArrayList<>();
-        List<Integer> filteredIndici = Filtri.filtra(service.getField((String) filter.get("Field")), (String) filter.get("Operator"), filter.get("Reference"));         //Richiama la funzione filtra all'interno della classe Filtri che filtra il campo passato dall'utente insieme all'operatore e al riferimento
-        for(int i : filteredIndici){                //For each che inserisce all'interno della lista filteredRecord tutti gli elementi del record filtrati
-            filteredRecord.add(service.getData(i));
-        }
-        return Statistiche.getAllStatistics(fieldStatistics, filteredRecord);
-    }
-        /**
-         * Metodo get che restituisce il record filtrato passando il body al metodo
-         *
-         * @param body body
-         */
-        @PostMapping("/getFilteredRecord")
-        public List getFilteredRecord(@RequestBody String body){
-            Map<String, Object> filter = parsingFilter(body);
-            String nameField = (String) filter.get("field");
-            String oper = (String) filter.get("operator");
-            Object reference = filter.get("reference");
-            return service.getFilteredRecord(nameField, oper, reference);
-        }
+
 
         /**
          * Metodo che effettua il parsing del filtro
