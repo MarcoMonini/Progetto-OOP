@@ -126,7 +126,6 @@ public class Download {
         try(BufferedReader bRead = new BufferedReader(new FileReader(fileTSV))){  //inizializza il buffer per il parsing
             bRead.readLine();        //Legge una riga a vuoto per saltare l'intestazione
             String linea;
-            int a;
             while((linea = bRead.readLine()) != null) {                          //Ciclo che continua fintanto che non trova una linea nulla
                 linea = linea.replace(",", TAB_DELIMITER);                //Sostituisce le virgole con i tab "\t"
                 linea = linea.replace(":","0");               //Sostituisce i ":" con "0"
@@ -212,11 +211,9 @@ public class Download {
     /**
      * Metodo che restituisce la lista dei valori relativi ad un singolo campo
      *
-     * @param nomeCampo
-     * @return
      */
 
-    public List getCampo(String nomeCampo) {
+    private List getCampo(String nomeCampo) {
         List<Object> listField = new ArrayList<>(); //inizializzo lista che conterrà i valori del campo
         try {
             /*
