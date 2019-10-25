@@ -12,11 +12,13 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,8 +80,10 @@ public class Download {
                         }
                     }
                 }
-                System.out.println("Download effettuato");
-            } catch (Exception e) {
+            } catch(IOException | ParseException e) {
+                e.printStackTrace();
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -95,8 +99,21 @@ public class Download {
      * @param fileName nome del file
      */
     private static void downloadTSV(String url, String fileName) throws Exception{
-        try(InputStream in = URI.create( url ).toURL().openStream() ) {
-            Files.copy(in, Paths.get(fileName));
+        HttpURLConnection openConnection = (HttpURLConnection) new URL(url).openConnection();
+        openConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+        InputStream input = openConnection.getInputStream();
+        String data = "";
+        String line = "";
+        try {
+            if(openConnection.getResponseCode() >= 300 && openConnection.getResponseCode() < 400) {
+                downloadTSV(openConnection.getHeaderField("Location"), fileName);
+                input.close();
+                openConnection.disconnect();
+                return;
+            }
+            Files.copy(input, Paths.get(fileName));
+        } finally {
+            input.close();
         }
     }
 
@@ -109,6 +126,7 @@ public class Download {
         try(BufferedReader bRead = new BufferedReader(new FileReader(fileTSV))){  //inizializza il buffer per il parsing
             bRead.readLine();        //Legge una riga a vuoto per saltare l'intestazione
             String linea;
+            int a;
             while((linea = bRead.readLine()) != null) {                          //Ciclo che continua fintanto che non trova una linea nulla
                 linea = linea.replace(",", TAB_DELIMITER);                //Sostituisce le virgole con i tab "\t"
                 linea = linea.replace(":","0");               //Sostituisce i ":" con "0"
@@ -120,10 +138,13 @@ public class Download {
                 String geo = lineaSeparata[3].trim();
                 float[] time = new float[CasiLegali.differenza_anni];                   //vettore di float che conterrà i valori nei vari anni
                 for(int i = 0; i < CasiLegali.differenza_anni; i++) {
-                        time[i] = Float.parseFloat(lineaSeparata[4 + i].trim());       //Inserisce i valori della tabella dentro il vettore
+                    if (4 + i < lineaSeparata.length){
+                        time[i] = Float.parseFloat(lineaSeparata[4 + i].trim());    //Inserisce i valori della tabella dentro il vettore
+                    } else
+                        time[i] = 0;
                 }
                 CasiLegali nuovoOggetto = new CasiLegali(leg_case, leg_stat, unit, geo, time);
-                record.add(nuovoOggetto);         //Aggiungo nuovoOggetto alla lista
+                record.add(nuovoOggetto);         //Aggiungo nuovo oggetto alla lista
             }
         } catch (IOException e){
             e.printStackTrace();
