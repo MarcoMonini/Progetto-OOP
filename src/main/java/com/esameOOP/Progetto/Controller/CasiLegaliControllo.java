@@ -2,13 +2,10 @@ package com.esameOOP.Progetto.Controller;
 
 import com.esameOOP.Progetto.Model.CasiLegali;
 import com.esameOOP.Progetto.Service.Download;
-import com.esameOOP.Progetto.Service.Statistiche;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.BasicJsonParser;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +30,7 @@ public class CasiLegaliControllo {
      *
      * @return "record" ovvero la lista con gli oggetti del dataset
      */
-    @GetMapping("/getData")
+    @GetMapping("/Data")
     public List getRecord() {
         return service.getData();
     }
@@ -43,7 +40,7 @@ public class CasiLegaliControllo {
      *
      * @return "anni" ovvero una lista di string
      */
-    @GetMapping("/getAnni")
+    @GetMapping("/Anni")
     public List getAnni() {
         return service.getTime();
     }
@@ -53,7 +50,7 @@ public class CasiLegaliControllo {
      *
      * @return "Lista" ovvero la lista nella classe Download che contiene i metadata
      */
-    @GetMapping("/getMetadata")
+    @GetMapping("/Metadata")
     public List getMetadati() {
         return service.getMetadata();
     }
@@ -64,7 +61,7 @@ public class CasiLegaliControllo {
      * @param i indice della lista che si vuole ottenere
      * @return "record" ovvero la lista con gli oggetti CasiLegali
      */
-    @GetMapping("/getData/{i}")
+    @GetMapping("/Data/{i}")
     public CasiLegali getCasiLegali(@PathVariable int i) {
         return service.getData(i);
     }
@@ -72,44 +69,16 @@ public class CasiLegaliControllo {
     /**
      * Metodo che gestisce la richiesta GET alla rotta "/getStatistiche"
      * ritorna le statistiche
-     * @param nameField parametro per richiedere le statistiche di un solo campo
+     * @param nomeCampo parametro per richiedere le statistiche di un solo campo
      * @return ...
      */
-    @GetMapping("/getStatistiche")
-    public List getStatistiche(@RequestParam(value = "Field", required = false, defaultValue = "") String nameField) {
-        if (nameField.equals(""))
-            return service.getAllStatisticheCampo();
-        else {
-            return service.getCampo(nameField);
-        }
+    @GetMapping("/Statistiche")
+    public List getStatistiche(@RequestParam(value = "Campo", required = false, defaultValue = "") String nomeCampo) {
+        if(!nomeCampo.equals("")) { //verifico se ho inserito un campo
+            List<Map> lista = new ArrayList<>();
+            lista.add(service.getStatistiche(nomeCampo));
+            return lista;
+        } else return service.getStatistiche(); //ottengo tutte le statistiche
     }
 
-
-        /**
-         * Metodo che effettua il parsing del filtro
-         *
-         * @param body body
-         * @return filter, restituisce la mappa filtro
-         */
-        private Map<String, Object> parsingFilter(String body){
-            Map<String, Object> bodyParsato = new BasicJsonParser().parseMap(body);
-            String nameField = bodyParsato.keySet().toArray(new String[0])[0];
-            System.out.println(nameField);
-            Object value = bodyParsato.get(nameField);
-            String operator;
-            Object reference;
-            if(value instanceof Map){
-                Map filter = (Map) value;
-                operator = ((String) filter.keySet().toArray()[0]).toLowerCase();
-                reference = filter.get(operator);
-            } else {
-                operator = "$gte";
-                reference = value;
-            }
-            Map<String, Object> filter = new HashMap<>();
-            filter.put("operator", operator);
-            filter.put("reference", reference);
-            filter.put("field", nameField);
-            return filter;
-        }
     }

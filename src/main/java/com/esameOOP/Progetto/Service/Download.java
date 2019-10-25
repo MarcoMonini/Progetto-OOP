@@ -239,7 +239,8 @@ public class Download {
             else {
                 //serve per scorrere tutti gli oggetti ed estrarre i valori del campo nomeCampo
                 for (CasiLegali casi : record) {
-                    Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1)); //costruisco il metodo get del modello di riferimento
+                    //costruisco il metodo get del modello di riferimento
+                    Method getter = CasiLegali.class.getMethod("get" + nomeCampo.substring(0, 1).toUpperCase() + nomeCampo.substring(1));
                     Object value = getter.invoke(casi);       //invoco il metodo get sull'oggetto della classe modellante
                     listField.add(value);                     //aggiungo il valore alla lista
                 }
@@ -259,7 +260,7 @@ public class Download {
      * @return lista delle statistiche
      */
 
-    public List<Map> getAllStatisticheCampo() {
+    public List<Map> getStatistiche() {
         Field[] fields = CasiLegali.class.getDeclaredFields(); //elenco degli attributi della classe
         List<Map> list = new ArrayList<>(); //lista di mappe che conterrà le statistiche
         for(Field campo : fields){
@@ -273,5 +274,8 @@ public class Download {
         return list;
     }
 
+    public Map getStatistiche(String nomeCampo) {
+        return Statistiche.getAllStatistics(nomeCampo, getCampo(nomeCampo));
+    }
 }
 
